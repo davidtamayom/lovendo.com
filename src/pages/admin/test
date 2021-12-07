@@ -1,0 +1,966 @@
+<!-- {/* <label className='flex flex-col' htmlFor="descripcion">
+                    Descripción Producto
+                    <select
+                    name='descripcion' 
+                    className='bg-gray-100 border border-gray-600 p-2 rounded-lg m-2' 
+                    Value = {productoSeleccionado._id}
+                    onChange={(e) => setProductoSeleccionado(productos.filter((p) => p._id ===e.target.value)[0])}
+                    required>
+                        <option disabled value={0}>Seleccione Producto</option>
+                        {productos.map((el) => {
+                            return <option key={nanoid()}>{`${el.descripcion}`}</option>
+                        })}
+                    </select>
+                </label>      
+                <table>
+                        <thead>
+                            <th>Precio</th>
+                            <th>Estado</th>
+                        </thead>
+                        <tbody>
+                            {productoSeleccionado.map(el=>{
+                                return ( 
+                                <tr>
+                                    <td>{el.precio}</td>
+                                    <td>{el.estado}</td>
+                                </tr>
+                            )})}
+                        </tbody>
+                </table>          
+                <label className='flex flex-col' htmlFor="precio">
+                    Precio Unidad
+                    <div
+                    name='precio' 
+                    className='bg-gray-100 border border-gray-600 p-2 rounded-lg m-2' 
+                    type="number">
+                    {productos.map((el) => {
+                        return <div key={nanoid()}>{`${el.precio}`}</div>
+                    })}
+                    </div> 
+                </label>
+                <label className='flex flex-col' htmlFor="cantidad">
+                    Cantidad
+                    <input
+                    name='cantidad' 
+                    className='bg-gray-100 border border-gray-600 p-2 rounded-lg m-2' 
+                    type="number"
+                    placeholder='123'
+                    required/> 
+                </label>
+                <label className='flex flex-col' htmlFor="total">
+                    Total Venta
+                    <input
+                    name='total' 
+                    className='bg-gray-100 border border-gray-600 p-2 rounded-lg m-2' 
+                    type="number"
+                    placeholder='$10.000'
+                    required/>
+                </label> 
+                <label className='flex flex-col' htmlFor="fecha">
+                    Fecha de Venta
+                    <input
+                    name='fecha' 
+                    className='bg-gray-100 border border-gray-600 p-2 rounded-lg m-2' 
+                    type="date"
+                    placeholder='Celular'
+                    required/>             
+                </label>
+                <label className='flex flex-col' htmlFor="cliente">
+                    Nombre Cliente
+                    <input
+                    name='cliente' 
+                    className='bg-gray-100 border border-gray-600 p-2 rounded-lg m-2' 
+                    type="text"
+                    placeholder='Pepito Perez'
+                    required/>             
+                </label>
+                <label className='flex flex-col' htmlFor="doc_cliente">
+                    Documento Cliente
+                    <input
+                    name='doc_cliente' 
+                    className='bg-gray-100 border border-gray-600 p-2 rounded-lg m-2' 
+                    type="number"
+                    placeholder='123456'
+                    required/>
+                </label>
+                <label className='flex flex-col' htmlFor="vendedor">
+                    Vendedor
+                    <select
+                    name='vendedor' 
+                    className='bg-gray-100 border border-gray-600 p-2 rounded-lg m-2' 
+                    defaultValue={0}
+                    required>
+                        <option disabled value={0}>Seleccione Vendedor</option>
+                        {vendedores.map((el) => {
+                            return <option key={nanoid()}>{`${el.nombre} ${el.apellido}`}</option>
+                        })}
+                    </select>             
+                </label>
+                <label className='flex flex-col' htmlFor="estado">
+                    Estado Producto
+                   <select 
+                   required
+                   name='estado' 
+                   className='bg-gray-100 border border-gray-600 p-2 rounded-lg m-2' 
+                   defaultValue={0}>
+                       <option disabled value={0}>Selecciona</option>
+                       <option>En Proceso</option>
+                       <option>Cancelada</option>
+                       <option>Entregada</option>
+                   </select>
+                </label>
+                <button 
+                type='submit'
+                className='col-span-2 bg-green-400 p-2 rounded-full shadow-md hover:bg-green-600 text-white m-2'>
+                    Guardar Datos</button>
+            </form>
+        </div> */} -->
+
+
+<!-- // USUARIOS -->
+
+<!-- import React, {useEffect, useState, useRef} from 'react';
+import {nanoid} from 'nanoid';
+import {Tooltip, Dialog} from '@material-ui/core';
+import {obtenerUsuarios, crearUsuario, editarUsuario, eliminarUsuario} from '../../utils/api.js';
+
+const Usuarios = () => {
+    
+    const [mostrarTabla, setMostrarTabla] = useState(true);
+    const [usuarios, setUsuarios] = useState([]);
+    const [textoBoton, setTextoBoton] = useState('Crear Usuario');
+    const [ejecutarConsulta, setEjecutarConsulta] = useState(true);
+
+    useEffect(() => {
+        if (ejecutarConsulta) {
+            obtenerUsuarios(
+                (response) => {
+                    setUsuarios(response.data);
+                },
+                (error) => {
+                    console.error(error);
+                }
+            );
+            setEjecutarConsulta(false);
+        }
+    } ,[ejecutarConsulta])
+
+    useEffect(()=>{
+        if(mostrarTabla) {
+            setTextoBoton('Crear Usuario');
+        } else {
+            setTextoBoton('Mostrar Usuarios');
+        }
+    },[mostrarTabla]);
+    
+    return (
+      <div className='flex h-full w-full flex-col items-center justify-start p-8'>
+          <div className='flex flex-col w-full'>
+            <h2 className='text-3xl font-extrabold text-gray-900'>Página de Administración de Usuarios</h2>
+            <button onClick={() => {
+                setMostrarTabla(!mostrarTabla);
+            }}
+                className='p-5 text-white bg-indigo-500 rounded-full m-6 w-28 self-end'>
+                    {textoBoton}
+                </button>
+        </div>
+          {mostrarTabla ? (<TablaUsuarios listaUsuarios={usuarios}/>
+          ) : (
+            <FormularioCreacionUsuarios 
+            setMostrarTabla = {setMostrarTabla}
+            listaUsuarios = {usuarios}
+            setUsuarios={setUsuarios}/>)}    
+      </div>
+    );
+;}
+
+const TablaUsuarios=({listaUsuarios})=>{
+
+const [busqueda, setBusqueda] = useState('');
+const [usuariosFiltrados, setUsuariosFiltrados] = useState(listaUsuarios);
+
+useEffect(() => {
+    setUsuariosFiltrados(
+        listaUsuarios.filter((elemento) => {
+        return JSON.stringify(elemento).toLowerCase().includes(busqueda.toLowerCase());
+        })
+    );
+}, [busqueda, listaUsuarios])
+   
+    return(
+        <div className='flex flex-col items-center justify-center w-full'>
+            <input 
+            placeholder='Buscar...' 
+            className='border-2 border-gray-700 px-3 py-1 self-start rounded-md'
+            value={busqueda}
+            onChange= {(e) => setBusqueda(e.target.value)}
+            />
+            <h2 className='text-2xl font-extrabold text-gray-800'>Todos los Usuarios</h2>
+            
+                <table className='tabla'>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Celular</th>
+                            <th>Email</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {usuariosFiltrados.map((usuario) =>{
+                            return(
+                            <FilaUsuario key={nanoid()} usuario={usuario} />
+                            )
+                        })}
+                    </tbody>
+                </table>
+            
+        </div>
+    );
+};
+
+const FilaUsuario = ({usuario, setEjecutarConsulta}) => {
+    const [edit, setEdit] = useState(false);
+    const [openDialog, setOpenDialog] = useState(false)
+    const [infoNuevoUsuario, setInfoNuevoUsuario] = useState({
+        _id: usuario._id,
+        nombre: usuario.nombre,
+        apellido: usuario.apellido,
+        celular: usuario.celular,
+        email: usuario.email,
+        estado: usuario.estado,
+    })
+    
+    const actualizarUsuario = async () => {
+        
+        await editarUsuario(
+            usuario._id, 
+            {
+                nombre: infoNuevoUsuario.nombre,
+                apellido: infoNuevoUsuario.apellido,
+                celular: infoNuevoUsuario.celular,
+                email: infoNuevoUsuario.email,
+                estado: infoNuevoUsuario.estado,
+        }, 
+            (response) => {
+                setEdit(false)
+                setEjecutarConsulta(true)
+            }, 
+            (error) => {
+                console.error(error)
+            })
+        
+    }
+
+    const eliminarUsuarios = async () => {
+        await eliminarUsuario(usuario._id, (response) => {
+            console.log(response.data);
+            setEjecutarConsulta(true)
+        }, (error) =>{
+            console.error(error);
+        });
+
+        setOpenDialog(false);
+    };
+
+    return (
+        <tr>
+            {edit ? (
+            <>
+                <td>
+                    <input 
+                    className='bg-gray-100 border border-gray-600 p-2 rounded-lg m-2'
+                    type="text" 
+                    value={infoNuevoUsuario.nombre}
+                    onChange={(e) => setInfoNuevoUsuario({...infoNuevoUsuario, nombre:e.target.value})}
+                    />
+                </td>
+                 <td>
+                    <input 
+                    className='bg-gray-100 border border-gray-600 p-2 rounded-lg m-2'
+                    type="text" 
+                    value={infoNuevoUsuario.apellido}
+                    onChange={(e) => setInfoNuevoUsuario({...infoNuevoUsuario, apellido:e.target.value})}
+                    />
+                </td>
+                <td>
+                    <input 
+                    className='bg-gray-100 border border-gray-600 p-2 rounded-lg m-2'
+                    type="number" 
+                    value={infoNuevoUsuario.celular}
+                    onChange={(e) => setInfoNuevoUsuario({...infoNuevoUsuario, celular:e.target.value})}
+                    />
+                </td>
+                 <td>
+                    <input 
+                    className='bg-gray-100 border border-gray-600 p-2 rounded-lg m-2'
+                    type="email" 
+                    value={infoNuevoUsuario.email}
+                    onChange={(e) => setInfoNuevoUsuario({...infoNuevoUsuario, email:e.target.value})}
+                    />
+                </td>
+                <td>
+                <select 
+                    required
+                    name='estado' 
+                    className='bg-gray-100 border border-gray-600 p-2 rounded-lg m-2' 
+                    defaultValue={0}
+                    value={infoNuevoUsuario.estado}
+                    onChange={(e) => setInfoNuevoUsuario({...infoNuevoUsuario, estado:e.target.value})}>
+                       <option disabled value={0}>Selecciona</option>
+                       <option>Pendiente</option>
+                       <option>Autorizado</option>
+                       <option>No Autorizado</option>
+                   </select>
+                    
+                    {/* <input 
+                    className='bg-gray-100 border border-gray-600 p-2 rounded-lg m-2'
+                    type="text" 
+                    value={infoNuevoCelular.estado}
+                    onChange={(e) => setInfoNuevoCelular({...infoNuevoCelular, estado:e.target.value})}
+                    /> */}
+                </td>
+            </>
+            ) : (
+                <>
+                <td>{usuario.nombre}</td>
+                <td>{usuario.apellido}</td>
+                <td>{usuario.celular}</td>
+                <td>{usuario.email}</td>
+                <td>{usuario.estado}</td>
+                </>  
+            )}
+       
+        <td>
+            <div className='flex w-full justify-around'>
+                {edit ? (
+                <> 
+                    <Tooltip title='Confirmar' arrow>
+                        <i className='fas fa-check text-green-700 hover:text-green-500'
+                        onClick={() => actualizarUsuario()}/>
+                    </Tooltip>
+                    <Tooltip title='Cancelar' arrow>
+                    <i 
+                    onClick={() => setEdit(!edit)}
+                    className='fas fa-ban' />
+                    </Tooltip>
+                </> 
+            ):(
+                <>
+                <Tooltip title='Editar' arrow>
+                    <i 
+                    onClick={() => setEdit(!edit)}
+                    className='fas fa-pencil-alt' />
+                </Tooltip>        
+                <Tooltip title='Eliminar' arrow>
+                <i 
+                onClick ={() => setOpenDialog(true)}
+                className='fas fa-trash text-red-500 hover:text-red-900' />
+                </Tooltip>
+                </>
+            )}        
+            </div>
+            <Dialog open={openDialog}>
+                <div className='p-8'>
+                    <h1 className='text-gray-900 text-2xl font-bold'>¿Está seguro de eliminar el usuario?</h1>
+                    <div className='flex w-full justify-center items-center my-4'>
+                        <button 
+                        onClick={() => eliminarUsuarios()}
+                        className = 'mx-2 px-4 py-2 bg-green-500 text-white hover:bg-green-700 rounded-md shadow-md'>SI</button>
+                        <button 
+                        onClick={() => setOpenDialog(false)}
+                        className = 'mx-2 px-4 py-2 bg-red-500 text-white hover:bg-red-700 rounded-md shadow-md'>NO</button>
+                    </div>
+                </div>
+            </Dialog>
+        </td>
+    </tr>
+    )
+}
+
+const FormularioCreacionUsuarios=({setMostrarTabla, listaUsuarios, setUsuarios})=>{
+    
+    const form = useRef(null);
+   
+    const submitForm = (e) =>{
+        e.preventDefault();
+        const fd = new FormData(form.current);
+    
+        const nuevoUsuario = {};
+        fd.forEach((value, key) => {
+            nuevoUsuario[key] = value;
+        });
+
+        crearUsuario({
+            nombre: nuevoUsuario.nombre,
+            apellido: nuevoUsuario.apellido,
+            celular: nuevoUsuario.celular,
+            email: nuevoUsuario.email,
+            estado: nuevoUsuario.estado
+        }, (response)=>{
+            console.log(response.data);
+        }, (error) => {
+            console.error(error)
+        });
+
+        setMostrarTabla(true);
+        setUsuarios([...listaUsuarios, nuevoUsuario]);
+    };
+        
+   
+    return(
+        <div className='flex flex-col items-center justify-center'>
+            <h2 className='text-2xl font-extrabold text-gray-800'>Crear Nuevo Usuario</h2>
+            <form ref={form} onSubmit= {submitForm} className='flex flex-col'>
+                <label className='flex flex-col' htmlFor="nombre">
+                    Nombre
+                    <input
+                    name='nombre' 
+                    className='bg-gray-100 border border-gray-600 p-2 rounded-lg m-2' 
+                    type="text"
+                    required/> 
+                </label>
+                <label className='flex flex-col' htmlFor="apellido">
+                    Apellido
+                    <input
+                    required
+                    name='apellido' 
+                    className='bg-gray-100 border border-gray-600 p-2 rounded-lg m-2' 
+                    type="text"
+                    /> 
+                </label>
+                <label className='flex flex-col' htmlFor="celular">
+                    Celular
+                    <input
+                    required
+                    name='celular' 
+                    className='bg-gray-100 border border-gray-600 p-2 rounded-lg m-2' 
+                    type="number"
+                    /> 
+                </label>
+                <label className='flex flex-col' htmlFor="email">
+                    Email
+                    <input
+                    required
+                    name='email' 
+                    className='bg-gray-100 border border-gray-600 p-2 rounded-lg m-2' 
+                    type="email"
+                    /> 
+                </label>
+                <label className='flex flex-col' htmlFor="estado">
+                    Estado
+                   <select 
+                   required
+                   name='estado' 
+                   className='bg-gray-100 border border-gray-600 p-2 rounded-lg m-2' 
+                   defaultValue={0}>
+                       <option disabled value={0}>Selecciona</option>
+                       <option>Pendiente</option>
+                       <option>Autorizado</option>
+                       <option>No Autorizado</option>
+                   </select>
+                </label>
+                <button type='submit'
+                className='col-span-2 bg-green-400 p-2 rounded-full shadow-md hover:bg-green-600 text-white'
+             >
+                    Guardar Datos</button>
+            </form>
+        </div>
+    )
+};
+
+export default Usuarios; -->
+
+<!-- // Ventas
+
+const [mostrarTabla, setMostrarTabla] = useState(true);
+    const [ventas, setVentas] = useState([])
+    const [textoBoton, setTextoBoton] = useState('Nueva Venta')
+    const [ejecutarConsulta, setEjecutarConsulta] = useState(true);
+    
+
+    useEffect(() => {
+        if (ejecutarConsulta) {
+            obtenerVentas(
+                (response) => {
+                    setVentas(response.data);
+                },
+                (error) => {
+                    console.error(error);
+                }
+            );
+            setEjecutarConsulta(false);
+        }
+    } ,[ejecutarConsulta])
+
+    useEffect(()=>{
+        if(mostrarTabla) {
+            setTextoBoton('Nueva Venta');
+        } else {
+            setTextoBoton('Mostrar Ventas');
+        }
+    },[mostrarTabla]);
+    
+    return (
+        
+        <div className='flex h-full w-full flex-col items-center justify-start p-8'>
+        <div className='flex flex-col w-full'>
+          <h2 className='text-3xl font-extrabold text-gray-900'>Página de Administración de Ventas</h2>
+          <button onClick={() => {
+              setMostrarTabla(!mostrarTabla);
+          }}
+              className='p-5 text-white bg-indigo-500 rounded-full m-6 w-28 self-end'>
+                  {textoBoton}
+              </button>
+      </div>
+        {mostrarTabla ? (<TablaVentas listaVentas={ventas}/>
+        ) : (
+        <FormularioCreacionVentas
+        setMostrarTabla = {setMostrarTabla}
+        listaVentas = {ventas}
+        setVentas={setVentas}/>)}    
+    </div>
+  );
+;}
+
+const TablaVentas=({listaVentas})=>{
+    
+    const [busqueda, setBusqueda] = useState('');
+    const [ventasFiltradas, setVentasFiltradas] = useState(listaVentas);
+
+    useEffect(() => {
+        setVentasFiltradas(
+            listaVentas.filter((elemento) => {
+            return JSON.stringify(elemento).toLowerCase().includes(busqueda.toLowerCase());
+            })
+        );
+    }, [busqueda, listaVentas])
+    
+    
+    return(
+        <div className='flex flex-col items-center justify-center'>
+             <input 
+            placeholder='Buscar...' 
+            className='border-2 border-gray-700 px-3 py-1 self-start rounded-md'
+            value={busqueda}
+            onChange= {(e) => setBusqueda(e.target.value)}
+            />
+            <h2 className='text-2xl font-extrabold text-gray-800'>Todas las Ventas</h2>
+                <table className='tabla'>
+                    <thead>
+                        <tr>
+                            <th>Descripción</th>
+                            <th>Cantidad</th>
+                            <th>Precio</th>
+                            <th>Total Venta</th>
+                            <th>Fecha</th>
+                            <th>Cliente</th>
+                            <th>Doc Cliente</th>
+                            <th>Vendedor</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {ventasFiltradas.map((venta) =>{
+                            return(
+                                <FilaVentas key={nanoid()} venta={venta}/>
+                            )
+                        })}
+                    </tbody>
+                </table>  
+        </div>
+    );
+};
+
+const FilaVentas = ({venta, setEjecutarConsulta}) => {
+    
+    const [edit, setEdit] = useState(false);
+    const [openDialog, setOpenDialog] = useState(false)
+    const [infoVentaNueva, setInfoVentaNueva] = useState({
+        descripcion: venta.descripcion,
+        cantidad: venta.cantidad,
+        precio: venta.precio,
+        total: venta.total,
+        fecha: venta.fecha,
+        cliente: venta.cliente,
+        doc_cliente: venta.doc_cliente,
+        vendedor: venta.vendedor,
+        estado: venta.estado
+    })
+
+    const actualizarVenta = async () => {
+        
+        await editarVenta(
+            venta._id, 
+            {
+                descripcion: venta.descripcion,
+                cantidad: venta.cantidad,
+                precio: venta.precio,
+                total: venta.total,
+                fecha: venta.fecha,
+                cliente: venta.cliente,
+                doc_cliente: venta.doc_cliente,
+                vendedor: venta.vendedor,
+                estado: venta.estado
+        }, 
+            (response) => {
+                setEdit(false)
+                setEjecutarConsulta(true)
+            }, 
+            (error) => {
+                console.error(error)
+            })
+        
+    }
+
+    const eliminarVentas = async () => {
+        await eliminarVenta(venta._id, (response) => {
+            console.log(response.data);
+            setEjecutarConsulta(true)
+        }, (error) =>{
+            console.error(error);
+        });
+
+        setOpenDialog(false);
+    };
+
+    return(
+    <tr>
+        {edit ? (
+            <>
+                <td>
+                    <input 
+                    type="text"
+                    className='bg-gray-100 border border-gray-600 p-1 rounded-lg m-1' 
+                    value={infoVentaNueva.descripcion}
+                    onChange={(e) => setInfoVentaNueva({...infoVentaNueva, descripcion:e.target.value})}/>
+                </td>
+                <td>
+                    <input 
+                    type="text"
+                    className='bg-gray-100 border border-gray-600 p-1 rounded-lg m-1' 
+                    value={infoVentaNueva.precio}
+                    onChange={(e) => setInfoVentaNueva({...infoVentaNueva, precio:e.target.value})}/>
+                </td>
+                <td>
+                    <input 
+                    type="text"
+                    className='bg-gray-100 border border-gray-600 p-1 rounded-lg m-1' 
+                    value={infoVentaNueva.cantidad}
+                    onChange={(e) => setInfoVentaNueva({...infoVentaNueva, cantidad:e.target.value})}/>
+                </td>
+                <td>
+                    <input 
+                    type="text"
+                    className='bg-gray-100 border border-gray-600 p-1 rounded-lg m-1' 
+                    value={infoVentaNueva.total}
+                    onChange={(e) => setInfoVentaNueva({...infoVentaNueva, total:e.target.value})}/>
+                </td>
+                <td>
+                    <input 
+                    type="text"
+                    className='bg-gray-100 border border-gray-600 p-1 rounded-lg m-1' 
+                    value={infoVentaNueva.fecha}
+                    onChange={(e) => setInfoVentaNueva({...infoVentaNueva, fecha:e.target.value})}/>
+                </td>
+                <td>
+                    <input 
+                    type="text"
+                    className='bg-gray-100 border border-gray-600 p-1 rounded-lg m-1' 
+                    value={infoVentaNueva.cliente}
+                    onChange={(e) => setInfoVentaNueva({...infoVentaNueva, cliente:e.target.value})}/>
+                </td>
+                <td>
+                    <input 
+                    type="text"
+                    className='bg-gray-100 border border-gray-600 p-1 rounded-lg m-1' 
+                    value={infoVentaNueva.doc_cliente}
+                    onChange={(e) => setInfoVentaNueva({...infoVentaNueva, doc_cliente:e.target.value})}/>
+                </td>
+                <td>
+                    <input 
+                    type="text"
+                    className='bg-gray-100 border border-gray-600 p-1 rounded-lg m-1' 
+                    value={infoVentaNueva.vendedor}
+                    onChange={(e) => setInfoVentaNueva({...infoVentaNueva, vendedor:e.target.value})}/>
+                </td>
+                <td>
+                    <select 
+                        required
+                        name='estado' 
+                        className='bg-gray-100 border border-gray-600 p-2 rounded-lg m-2' 
+                        defaultValue={0}
+                        value={infoVentaNueva.estado}
+                    onChange={(e) => setInfoVentaNueva({...infoVentaNueva, estado:e.target.value})}>
+                            <option disabled value={0}>Selecciona</option>
+                            <option>En Proceso</option>
+                            <option>Cancelada</option>
+                            <option>Entregada</option>
+                    </select>
+                    {/* <input 
+                    type="text"
+                    className='bg-gray-100 border border-gray-600 p-1 rounded-lg m-1' 
+                    value={infoVentaNueva.estado}
+                    onChange={(e) => setInfoVentaNueva({...infoVentaNueva, estado:e.target.value})}/> */}
+                </td>
+            </>
+        ) : (
+            <>
+                                <td>{venta.descripcion}</td>
+                                <td>{venta.cantidad}</td>
+                                <td>{venta.precio}</td>
+                                <td>{venta.total}</td>
+                                <td>{venta.fecha}</td>
+                                <td>{venta.cliente}</td>
+                                <td>{venta.doc_cliente}</td>
+                                <td>{venta.vendedor}</td>
+                                <td>{venta.estado}</td>
+            </>
+        )}
+        <td>
+            <div className='flex w-full justify-around'>
+                {edit ? (
+            <>    
+                <Tooltip title='Confirmar' arrow>
+                <i className='fas fa-check text-green-700 hover:text-green-500'
+                onClick={() => actualizarVenta()}/>
+                </Tooltip>
+                <Tooltip title='Cancelar' arrow>
+                <i 
+                onClick={() => setEdit(!edit)}
+                className='fas fa-ban' />
+                </Tooltip>
+            </>    
+            ):(
+                <>
+                <Tooltip title='Editar' arrow>
+                    <i 
+                    onClick={() => setEdit(!edit)}
+                    className='fas fa-pencil-alt' />
+                </Tooltip>        
+                <Tooltip title='Eliminar' arrow>
+                <i 
+                onClick ={() => setOpenDialog(true)}
+                className='fas fa-trash text-red-500 hover:text-red-900' />
+                </Tooltip>
+                </>
+            )}        
+            </div>
+            <Dialog open={openDialog}>
+                <div className='p-8'>
+                    <h1 className='text-gray-900 text-2xl font-bold'>¿Está seguro de eliminar la venta?</h1>
+                    <div className='flex w-full justify-center items-center my-4'>
+                        <button 
+                        onClick={() => eliminarVentas()}
+                        className = 'mx-2 px-4 py-2 bg-green-500 text-white hover:bg-green-700 rounded-md shadow-md'>SI</button>
+                        <button 
+                        onClick={() => setOpenDialog(false)}
+                        className = 'mx-2 px-4 py-2 bg-red-500 text-white hover:bg-red-700 rounded-md shadow-md'>NO</button>
+                    </div>
+                </div>
+            </Dialog>
+        </td>
+    </tr>
+    )
+}
+
+const FormularioCreacionVentas=({setMostrarTabla, listaVentas, setVentas})=>{
+    const [productosTabla, setProductosTabla] = useState({})
+    const form = useRef(null);
+   
+    const submitForm = async (e) =>{
+        e.preventDefault();
+        const fd = new FormData(form.current);
+    
+        const nuevaVenta = {};
+        fd.forEach((value, key) => {
+            nuevaVenta[key] = value;
+        });
+
+        const listaProducto = Object.keys(nuevaVenta).map((k)=> {
+            if(k.includes('producto')){
+                return productosTabla.filter((p) => p._id === nuevaVenta[k])[0]
+            }   
+            return null
+        })
+        .filter((p) => p);
+
+        // Object.keys(nuevaVenta).forEach((k)=> {
+        //     if(k.includes('cantidad')) {
+        //         const indice = parseInt(k.split('_')[1]);
+        //         listaProducto[indice]['cantidad'] = nuevaVenta[k];
+        //     }   
+        // });    
+
+    
+        const infoConsolida = {
+            descripcion: listaProducto,
+            // cantidad: nuevaVenta.cantidad,
+            // total: nuevaVenta.total,
+            // fecha: nuevaVenta.fecha,
+            // cliente: nuevaVenta.cliente,
+            // doc_cliente: nuevaVenta.doc_cliente,
+            vendedor: vendedores.filter((v) => v._id === nuevaVenta.vendedor)[0],
+        }
+
+        await crearVenta(
+            infoConsolida, 
+            (response) => {
+                console.log(response.data)
+            },
+            (error) => {
+                console.error(error)
+            }
+        )
+
+        setMostrarTabla(true);
+        setVentas([...listaVentas, infoConsolida]);
+
+
+    };
+    
+    const [vendedores, setVendedores] = useState([]);
+    const [productos, setProductos] = useState([]);
+
+    useEffect(() =>{
+        const obtenerVendedores = async () => {
+            await obtenerUsuarios(
+            (response) => {
+                setVendedores(response.data);
+            }, 
+            (error)=>{
+                console.error(error);
+            });
+        };
+        const obtenerCelulares = async () => {
+            await obtenerProductos (
+                (response) => {
+                    setProductos(response.data);
+                },
+                (error) => {
+                    console.error(error);
+            });
+        };
+        obtenerVendedores();
+        obtenerCelulares();
+    }, [])
+ 
+    return(
+        <div className='flex flex-col items-center justify-center'>
+            <h2 className='text-2xl font-extrabold text-gray-800'>Crear Nueva Venta</h2>
+            <form ref={form} onSubmit= {submitForm} className='grid grid-col-3'>
+            <label className='flex flex-col' htmlFor="vendedor">
+                    <select
+                    name='vendedor' 
+                    className='bg-gray-100 border border-gray-600 p-2 rounded-lg m-2' 
+                    defaultValue={0}
+                    required>
+                        <option disabled value={0}>Seleccione Vendedor</option>
+                        {vendedores.map((el) => {
+                            return <option key={nanoid()}>{`${el.nombre} ${el.apellido}`}</option>
+                        })}
+                    </select>             
+                </label>
+            <TablaProducto 
+                productos ={productos} 
+                setProductos={setProductos}
+                setProductosTabla= {setProductosTabla}/>
+            <button 
+                type='submit'
+                onClick ={() => crearVenta()}
+                className='col-span-2 bg-green-400 p-2 rounded-full shadow-md hover:bg-green-600 text-white m-2'>
+                    Guardar Datos</button>
+            </form>
+        </div>
+            
+    );
+};
+
+const TablaProducto = ({productos, setProductos, setProductosTabla}) => {
+    
+    const [productoAgregar, setProductoAgregar] = useState({})
+    const [filasTabla, setFilasTabla] = useState([])
+
+    useEffect(() => {
+        setProductosTabla(filasTabla);
+    }, {filasTabla, setProductosTabla})
+
+
+    const agregarNuevoProducto = () =>{
+        setFilasTabla([...filasTabla, productoAgregar])
+        setProductos(productos.filter((p)=> p._id !== productoAgregar._id))
+        setProductoAgregar({})
+    }
+
+    const eliminarFilaProducto = (productoAEliminar) => {
+        setFilasTabla(filasTabla.filter((p) => p._id !== productoAEliminar._id))
+        setProductos([...productos, productoAEliminar])
+    }
+    return (
+    <div>   
+        <div className = 'flex'>
+            <label className = 'flex flex-col' htmlFor="producto">
+                <select className = 'p-2' 
+                        value={productoAgregar._id ?? ''}
+                        onChange={(e) => setProductoAgregar(productos.filter((p) => p._id === e.target.value)[0])}>
+                    <option disable value= ''>
+                        Seleccione un Producto
+                    </option>
+                    {productos.map((el) => {
+                        return (
+                            <option key={nanoid()} 
+                            value={el._id}>
+                                {`${el.descripcion}`}
+                            </option>
+                        );
+                    })}
+                </select>
+            </label>
+            <button
+            type='button'
+            onClick = {() => agregarNuevoProducto()}
+            className= ' col-span-2 bg-green-400 p-2 rounded-full text-white'>
+                Agregar Producto
+            </button>
+        </div> 
+            <table className = 'tabla'>
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Producto</th>
+                        <th>Precio</th>
+                        <th>Estado</th>
+                        <th>Cantidad</th>
+                        <th>Eliminar</th>
+                        <th className = 'hidden'>Input</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {filasTabla.map((e, index) => {
+                        return (
+                            <tr key={nanoid()}>
+                                <td>{e._id}</td>
+                                <td>{e.descripcion}</td>
+                                <td>{e.precio}</td>
+                                <td>{e.estado}</td>
+                                <td>
+                                    <label htmlFor={`valor_${index}`}>
+                                    <input type='number' name={`cantidad_${index}`} required />
+                                    </label>
+                                </td>
+                                <td><i onClick={() => eliminarFilaProducto(e)} 
+                                       className='fas fa-minus text-gray-700'/></td>
+                                <td>
+                                    <input hidden defaultValue={e._id} name={`producto_${index}`} />
+                                </td>
+                            </tr>
+                        )
+                    })}
+                </tbody>
+            </table>
+    </div>
+    );
+}; -->
